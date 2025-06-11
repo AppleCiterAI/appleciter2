@@ -1,11 +1,9 @@
 # appleciter
-# pip install --upgrade pip
 # AppleCiter Project Code - Consolidated for Deployment
-# Contains app.py, requirements.txt, and frontend files (index.html, styles.css, script.js)
+# Contains app.py, and frontend files (index.html, styles.css, script.js)
 # Designed for Python/Flask backend, arXiv API, and Wix embedding via iframe
 # Deploy on Render with build command: pip install -r requirements.txt
 # Start command: gunicorn app:app
-# Updated to ensure requirements.txt is correctly included and safety filter refuses inappropriate queries
 
 # --- app.py ---
 from flask import Flask, request, jsonify, render_template
