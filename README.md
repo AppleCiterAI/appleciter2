@@ -1,9 +1,11 @@
-# appleciter2
-2nd version of appleciter chatter# AppleCiter Project Code - Consolidated for Deployment
-# Contains app.py, pip install -r subdirectory/requirements.txt, and frontend files (index.html, styles.css, script.js)
+# appleciter
+1st version of appleciter chatter# AppleCiter Project Code - Consolidated for Deployment
+# AppleCiter Project Code - Consolidated for Deployment
+# Contains app.py, requirements.txt, and frontend files (index.html, styles.css, script.js)
 # Designed for Python/Flask backend, arXiv API, and Wix embedding via iframe
-# Deploy on Render with build command: pip install -r subdirectory/requirements.txt
+# Deploy on Render with build command: pip install -r requirements.txt
 # Start command: gunicorn app:app
+# Updated to fix missing requirements.txt and enforce explicit refusal for inappropriate queries
 
 # --- app.py ---
 from flask import Flask, request, jsonify, render_template
@@ -12,9 +14,9 @@ import re
 
 app = Flask(__name__)
 
-# Keyword-based safety filter for school-safe content
+# Enhanced keyword-based safety filter for school-safe content
 def is_safe_query(query):
-    unsafe_keywords = ['violence', 'explicit', 'adult', 'hate', 'illegal']
+    unsafe_keywords = ['violence', 'sex', 'suicide', 'murder', 'kill', 'explicit', 'adult', 'hate', 'illegal', 'drugs', 'weapons', 'pornography']
     return not any(keyword in query.lower() for keyword in unsafe_keywords)
 
 # Clean arXiv response to extract relevant data
@@ -45,10 +47,10 @@ def query():
     user_query = data.get('query', '').strip()
 
     if not user_query:
-        return jsonify({'error': 'Empty query provided'}), 400
+        return jsonify({'error': 'Empty query provided. Please enter a valid research topic.'}), 400
 
     if not is_safe_query(user_query):
-        return jsonify({'error': 'Query contains inappropriate content'}), 400
+        return jsonify({'error': 'This query contains inappropriate content and cannot be processed. Please try a different topic.'}), 400
 
     try:
         # Query arXiv API
@@ -56,7 +58,7 @@ def query():
         response = requests.get(arxiv_url, timeout=10)
         response.raise_for_status()
 
-        # Parse XML response (simplified for brevity)
+        # Parse XML response
         from xml.etree import ElementTree
         root = ElementTree.fromstring(response.content)
         ns = {'atom': 'http://www.w3.org/2005/Atom'}
@@ -64,14 +66,14 @@ def query():
         
         results = clean_arxiv_response(entries)
         if not results:
-            return jsonify({'error': 'No results found for your query'}), 404
+            return jsonify({'error': 'No results found for your query. Try a different topic.'}), 404
 
         return jsonify({'results': results})
 
     except requests.exceptions.RequestException as e:
-        return jsonify({'error': f'Failed to fetch results: {str(e)}'}), 500
+        return jsonify({'error': f'Failed to fetch results: {str(e)}. Please try again later.'}), 500
     except Exception as e:
-        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+        return jsonify({'error': f'Unexpected error: {str(e)}. Contact support if this persists.'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
@@ -94,7 +96,7 @@ gunicorn==23.0.0
     <div class="container">
         <h1>AppleCiter</h1>
         <p>Search for academic papers safely!</p>
-        <div class="chat-box" id="chatBox"></div>
+        <div class="chat-box" id="chatHistory"></div>
         <div class="input-area">
             <input type="text" id="userInput" placeholder="Ask about a research topic...">
             <button onclick="sendQuery()">Send</button>
@@ -119,8 +121,8 @@ body {
 .container {
     background: white;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 600px;
 }
@@ -132,11 +134,12 @@ h1 {
 
 .chat-box {
     border: 1px solid #ccc;
-    padding: 10px;
-    height: 300px;
-    overflow-y: scroll;
-    margin-bottom: 10px;
+    padding: 15px;
+    height: 350px;
+    overflow-y: auto;
+    margin-bottom: 15px;
     background: #fafafa;
+    border-radius: 5px;
 }
 
 .input-area {
@@ -149,6 +152,7 @@ input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 16px;
 }
 
 button {
@@ -158,6 +162,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
@@ -165,20 +170,25 @@ button:hover {
 }
 
 .message {
-    margin: 5px 0;
+    margin: 8px 0;
+    padding: 8px;
+    border-radius: 5px;
 }
 
 .user-message {
+    background: #e3f2fd;
     color: #007bff;
-    font-weight: bold;
+    text-align: right;
 }
 
 .bot-message {
+    background: #f5f5f5;
     color: #333;
 }
 
 .error-message {
-    color: red;
+    background: #ffebee;
+    color: #d32f2f;
 }
 
 # --- static/script.js ---
@@ -186,11 +196,11 @@ function sendQuery() {
     const userInput = document.getElementById('userInput').value.trim();
     if (!userInput) return;
 
-    const chatBox = document.getElementById('chatBox');
+    const chatHistory = document.getElementById('chatHistory');
     const userMessage = document.createElement('div');
     userMessage.className = 'message user-message';
     userMessage.textContent = `You: ${userInput}`;
-    chatBox.appendChild(userMessage);
+    chatHistory.appendChild(userMessage);
 
     fetch('/query', {
         method: 'POST',
@@ -204,9 +214,9 @@ function sendQuery() {
         
         if (data.error) {
             botMessage.className = 'message error-message';
-            botMessage.textContent = `Error: ${data.error}`;
+            botMessage.textContent = `AppleCiter: ${data.error}`;
         } else {
-            let responseText = 'AppleCiter: Found some papers for you:\n';
+            let responseText = 'AppleCiter: Found these papers for you:\n';
             data.results.forEach(result => {
                 responseText += `<p><strong>${result.title}</strong><br>`;
                 responseText += `${result.summary}<br>`;
@@ -215,15 +225,15 @@ function sendQuery() {
             });
             botMessage.innerHTML = responseText;
         }
-        chatBox.appendChild(botMessage);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chatHistory.appendChild(botMessage);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
     })
     .catch(error => {
         const errorMessage = document.createElement('div');
         errorMessage.className = 'message error-message';
-        errorMessage.textContent = `Error: Failed to connect to server`;
-        chatBox.appendChild(errorMessage);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        errorMessage.textContent = `AppleCiter: Failed to connect to server. Please try again.`;
+        chatHistory.appendChild(errorMessage);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
     });
 
     document.getElementById('userInput').value = '';
