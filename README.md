@@ -1,8 +1,8 @@
 # appleciter2
 2nd version of appleciter chatter# AppleCiter Project Code - Consolidated for Deployment
 # Contains app.py, pip install requirements.txt 79, and frontend files (index.html, styles.css, script.js)
-# Designed for Python 3/Flask backend, arXiv API, and Wix embedding via iframe
-# Deploy on Render with build command: pip install -r requirements.txt
+# Designed for Python/Flask backend, arXiv API, and Wix embedding via iframe
+# Deploy on Render with build command: requirements.txt 79
 # Start command: gunicorn app:app
 
 # --- app.py ---
