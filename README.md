@@ -1,4 +1,5 @@
 # appleciter
+# pip install --upgrade pip
 # AppleCiter Project Code - Consolidated for Deployment
 # Contains app.py, requirements.txt, and frontend files (index.html, styles.css, script.js)
 # Designed for Python/Flask backend, arXiv API, and Wix embedding via iframe
