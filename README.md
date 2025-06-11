@@ -16,13 +16,12 @@ def hello_world():
 
 app = Flask(__name__)
 
-# Build command
-pip install -r requirements.txt
+ # --- requirements.txt ---
+Flask==3.0.3
+requests==2.32.3
+gunicorn==23.0.0
 
-# Start command
-gunicorn app:app
-
-# Enhanced keyword-based safety filter for school-safe content
+# Safety features
 def is_safe_query(query):
     unsafe_keywords = ['violence', 'sex', 'suicide', 'murder', 'kill', 'explicit', 'adult', 'hate', 'illegal', 'drugs', 'weapons', 'pornography']
     return not any(keyword in query.lower() for keyword in unsafe_keywords)
@@ -85,11 +84,6 @@ def query():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
-# --- requirements.txt ---
-Flask==3.0.3
-requests==2.32.3
-gunicorn==23.0.0
 
 # --- templates/index.html ---
 <!DOCTYPE html>
