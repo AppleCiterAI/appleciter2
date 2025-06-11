@@ -14,7 +14,7 @@ import re
 
 app = Flask(__name__)
 
-# Enhanced keyword-based safety filter for school-safe content
+# requirements.txt Enhanced keyword-based safety filter for school-safe content
 def is_safe_query(query):
     unsafe_keywords = ['violence', 'sex', 'suicide', 'murder', 'kill', 'explicit', 'adult', 'hate', 'illegal', 'drugs', 'weapons', 'pornography']
     return not any(keyword in query.lower() for keyword in unsafe_keywords)
