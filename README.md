@@ -6,11 +6,21 @@
 # Start command: gunicorn app:app
 
 # --- app.py ---
-from flask import Flask, request, jsonify, render_template
-import requests
-import re
+from flask import Flask
 
 app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+app = Flask(__name__)
+
+# Build command
+pip install -r requirements.txt
+
+# Start command
+gunicorn app:app
 
 # Enhanced keyword-based safety filter for school-safe content
 def is_safe_query(query):
