@@ -5,7 +5,7 @@
 # Designed for Python/Flask backend, arXiv API, and Wix embedding via iframe
 # Deploy on Render with build command: pip install -r requirements.txt
 # Start command: gunicorn app:app
-# Updated to fix missing requirements.txt and enforce explicit refusal for inappropriate queries
+# Updated to ensure requirements.txt is correctly included and safety filter refuses inappropriate queries
 
 # --- app.py ---
 from flask import Flask, request, jsonify, render_template
@@ -83,6 +83,23 @@ Flask==3.0.3
 requests==2.32.3
 gunicorn==23.0.0
 
+# --- templates/index.html ---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppleCiter - Academic Search Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AppleCiter</h1>
+        <p>Search for academic papers safely!</p>
+        <div class="chat-box" id="chatHistory"></div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Ask about a research topic...">
+            <button onclick="
 # --- templates/index.html ---
 <!DOCTYPE html>
 <html lang="en">
