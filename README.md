@@ -23,7 +23,7 @@ gunicorn==23.0.0
 
 # Safety features
 def is_safe_query(query):
-    unsafe_keywords = ['violence', 'sex', 'suicide', 'murder', 'kill', 'explicit', 'adult', 'hate', 'illegal', 'drugs', 'weapons', 'pornography']
+    unsafe_keywords = ['sex', 'suicide', 'murder', 'kill', 'explicit', 'pornography']
     return not any(keyword in query.lower() for keyword in unsafe_keywords)
 
 # Clean arXiv response to extract relevant data
