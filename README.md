@@ -16,6 +16,8 @@ def hello_world():
 
 app = Flask(__name__)
 
+# Open requirements file: 'requirements.txt'
+
  # --- requirements.txt ---
 Flask==3.0.3
 requests==2.32.3
